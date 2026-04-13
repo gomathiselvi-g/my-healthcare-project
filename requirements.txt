@@ -1,2 +1,8 @@
 streamlit
-fpdf
+requests
+fastapi
+uvicorn
+pydantic
+reportlab
+langchain
+langchain_ollama
