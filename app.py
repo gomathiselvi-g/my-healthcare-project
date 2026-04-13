@@ -4,13 +4,11 @@ from model import predict_doctor
 
 st.title("AI Healthcare System")
 
+# Inputs
 name = st.text_input("Enter your name")
 symptoms = st.text_input("Enter your symptoms")
 
-if st.button("Predict Doctor"):
-    doctor = predict_doctor(symptoms)
-    st.success(f"Doctor: {doctor}")
-
+# PDF Function
 def create_pdf(name, symptoms, doctor):
     pdf = FPDF()
     pdf.add_page()
@@ -28,6 +26,9 @@ def create_pdf(name, symptoms, doctor):
     pdf.output(file_name)
 
     return file_name
+
+
+# Predict Button (ONLY ONCE)
 if st.button("Predict Doctor"):
     doctor = predict_doctor(symptoms)
     st.success(f"Doctor: {doctor}")
@@ -37,7 +38,9 @@ if st.button("Predict Doctor"):
     with open(pdf_file, "rb") as f:
         st.download_button("Download PDF", f, file_name="report.pdf")
 
-    st.subheader("Chatbot 🤖")
+
+# Chatbot Section
+st.subheader("Chatbot 🤖")
 
 user_input = st.text_input("Ask something")
 
