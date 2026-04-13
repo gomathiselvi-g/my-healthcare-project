@@ -1,9 +1,7 @@
 import streamlit as st
 from fpdf import FPDF
 import requests
-from datetime import datetime
 
-# FastAPI URL
 API_URL = "http://127.0.0.1:8000/predict"
 
 st.title("🏥 AI Healthcare System")
@@ -11,6 +9,9 @@ st.title("🏥 AI Healthcare System")
 # Inputs
 name = st.text_input("Enter your name")
 symptoms = st.text_input("Enter your symptoms")
+
+date = st.date_input("Select appointment date 📅")
+time = st.time_input("Select appointment time ⏰")
 
 
 # PDF Function
@@ -26,8 +27,6 @@ def create_pdf(name, symptoms, doctor, date, time):
     pdf.cell(200, 10, txt=f"Name: {name}", ln=True)
     pdf.cell(200, 10, txt=f"Symptoms: {symptoms}", ln=True)
     pdf.cell(200, 10, txt=f"Recommended Doctor: {doctor}", ln=True)
-
-    # 🔥 NEW
     pdf.cell(200, 10, txt=f"Appointment Date: {date}", ln=True)
     pdf.cell(200, 10, txt=f"Appointment Time: {time}", ln=True)
 
@@ -36,8 +35,6 @@ def create_pdf(name, symptoms, doctor, date, time):
 
     return file_name
 
-date = st.date_input("Select appointment date 📅")
-time = st.time_input("Select appointment time ⏰")
 
 # 🔥 ONLY ONE BUTTON
 if st.button("Predict Doctor"):
@@ -57,7 +54,7 @@ if st.button("Predict Doctor"):
 
                 st.success(f"Doctor: {doctor}")
 
-                # ✅ FIXED HERE
+                # PDF generate
                 pdf_file = create_pdf(name, symptoms, doctor, date, time)
 
                 with open(pdf_file, "rb") as f:
@@ -68,23 +65,9 @@ if st.button("Predict Doctor"):
 
         except:
             st.error("API not running! Start FastAPI first.")
-if response.status_code == 200:
-    data = response.json()
-    doctor = data["recommended_doctor"]
-else:
-    st.error("API error! Check backend")
-try:
-    
-            # Generate PDF
-    pdf_file = create_pdf(name, symptoms, doctor, date, time)
-
-    with open(pdf_file, "rb") as f:
-        st.download_button("Download PDF", f, file_name="report.pdf")
-except:
-        st.error("API not running! Start FastAPI first")
 
 
-# 🤖 Chatbot Section
+# 🤖 Chatbot
 st.subheader("Chatbot 🤖")
 
 user_input = st.text_input("Ask something")
