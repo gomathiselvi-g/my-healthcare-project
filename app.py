@@ -1,6 +1,7 @@
 import streamlit as st
 from fpdf import FPDF
 import requests
+from datetime import datetime
 
 # FastAPI URL
 API_URL = "http://localhost:8000/predict"
@@ -13,7 +14,7 @@ symptoms = st.text_input("Enter your symptoms")
 
 
 # PDF Function
-def create_pdf(name, symptoms, doctor):
+def create_pdf(name, symptoms, doctor, date, time):
     pdf = FPDF()
     pdf.add_page()
 
@@ -26,11 +27,17 @@ def create_pdf(name, symptoms, doctor):
     pdf.cell(200, 10, txt=f"Symptoms: {symptoms}", ln=True)
     pdf.cell(200, 10, txt=f"Recommended Doctor: {doctor}", ln=True)
 
+    # 🔥 NEW
+    pdf.cell(200, 10, txt=f"Appointment Date: {date}", ln=True)
+    pdf.cell(200, 10, txt=f"Appointment Time: {time}", ln=True)
+
     file_name = "report.pdf"
     pdf.output(file_name)
 
     return file_name
 
+date = st.date_input("Select appointment date 📅")
+time = st.time_input("Select appointment time ⏰")
 
 # 🔥 ONLY ONE BUTTON
 if st.button("Predict Doctor"):
