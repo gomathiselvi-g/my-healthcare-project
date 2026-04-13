@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 
 # FastAPI URL
-API_URL = "http://localhost:8000/predict"
+API_URL = "http://127.0.0.1:8000/predict"
 
 st.title("🏥 AI Healthcare System")
 
@@ -46,19 +46,36 @@ if st.button("Predict Doctor"):
         st.warning("Please fill all fields")
     else:
         try:
-            # Call FastAPI
             response = requests.post(API_URL, json={
                 "name": name,
                 "symptoms": symptoms
             })
 
-            data = response.json()
-            doctor = data["recommended_doctor"]
+            if response.status_code == 200:
+                data = response.json()
+                doctor = data["recommended_doctor"]
 
-            st.success(f"Doctor: {doctor}")
+                st.success(f"Doctor: {doctor}")
+
+                # ✅ FIXED HERE
+                pdf_file = create_pdf(name, symptoms, doctor, date, time)
+
+                with open(pdf_file, "rb") as f:
+                    st.download_button("Download PDF", f, file_name="report.pdf")
+
+            else:
+                st.error("API error! Check backend")
+
+        except:
+            st.error("API not running! Start FastAPI first.")
+if response.status_code == 200:
+    data = response.json()
+    doctor = data["recommended_doctor"]
+else:
+    st.error("API error! Check backend")
 
             # Generate PDF
-            pdf_file = create_pdf(name, symptoms, doctor)
+            pdf_file = create_pdf(name, symptoms, doctor, date, time)
 
             with open(pdf_file, "rb") as f:
                 st.download_button("Download PDF", f, file_name="report.pdf")
