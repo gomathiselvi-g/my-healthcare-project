@@ -1,12 +1,16 @@
 import streamlit as st
 from fpdf import FPDF
-from model import predict_doctor
+import requests
 
-st.title("AI Healthcare System")
+# FastAPI URL
+API_URL = "http://localhost:8000/predict"
+
+st.title("🏥 AI Healthcare System")
 
 # Inputs
 name = st.text_input("Enter your name")
 symptoms = st.text_input("Enter your symptoms")
+
 
 # PDF Function
 def create_pdf(name, symptoms, doctor):
@@ -28,18 +32,35 @@ def create_pdf(name, symptoms, doctor):
     return file_name
 
 
-# Predict Button (ONLY ONCE)
+# 🔥 ONLY ONE BUTTON
 if st.button("Predict Doctor"):
-    doctor = predict_doctor(symptoms)
-    st.success(f"Doctor: {doctor}")
 
-    pdf_file = create_pdf(name, symptoms, doctor)
+    if name == "" or symptoms == "":
+        st.warning("Please fill all fields")
+    else:
+        try:
+            # Call FastAPI
+            response = requests.post(API_URL, json={
+                "name": name,
+                "symptoms": symptoms
+            })
 
-    with open(pdf_file, "rb") as f:
-        st.download_button("Download PDF", f, file_name="report.pdf")
+            data = response.json()
+            doctor = data["recommended_doctor"]
+
+            st.success(f"Doctor: {doctor}")
+
+            # Generate PDF
+            pdf_file = create_pdf(name, symptoms, doctor)
+
+            with open(pdf_file, "rb") as f:
+                st.download_button("Download PDF", f, file_name="report.pdf")
+
+        except:
+            st.error("API not running! Start FastAPI first.")
 
 
-# Chatbot Section
+# 🤖 Chatbot Section
 st.subheader("Chatbot 🤖")
 
 user_input = st.text_input("Ask something")
@@ -61,5 +82,6 @@ def chatbot_response(text):
         return "Sorry, I didn't understand."
 
 if st.button("Send"):
-    response = chatbot_response(user_input)
-    st.write(response)
+    if user_input != "":
+        response = chatbot_response(user_input)
+        st.write(response)
