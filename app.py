@@ -71,22 +71,102 @@ if st.button("Predict Doctor"):
 st.subheader("Chatbot 🤖")
 
 user_input = st.text_input("Ask something")
-
 def chatbot_response(text):
     text = text.lower()
 
-    if "hello" in text:
-        return "Hi! How can I help you?"
+    if any(word in text for word in ["hello", "hi", "hey"]):
+        return """Hello 😊  
+I am your healthcare assistant.  
+
+You can ask me about:
+• Symptoms (fever, headache, etc.)
+• Doctor suggestions  
+• Appointments  
+• General health tips  
+
+How can I help you today?"""
+
     elif "fever" in text:
-        return "You should consult a General Physician."
-    elif "skin" in text:
-        return "Consult a Dermatologist."
-    elif "heart" in text:
-        return "Consult a Cardiologist."
+        return """Fever usually indicates an infection in your body.  
+
+Possible reasons:
+• Viral infection  
+• Bacterial infection  
+• Weather changes  
+
+What you can do:
+• Drink plenty of fluids 💧  
+• Take rest 🛌  
+• Monitor temperature  
+
+👉 If fever continues for more than 2 days, consult a General Physician."""
+
+    elif "headache" in text:
+        return """Headache can occur due to:  
+
+• Stress 😓  
+• Dehydration 💧  
+• Lack of sleep 😴  
+
+Try this:
+• Drink water  
+• Take rest  
+• Avoid screen time  
+
+👉 If pain is severe, consult a doctor."""
+
+    elif "appointment" in text:
+        return """You can easily book an appointment using this app 📅  
+
+Steps:
+1. Enter your name  
+2. Enter your symptoms  
+3. Select date & time  
+4. Click "Predict Doctor"  
+
+You will get:
+✔ Doctor suggestion  
+✔ PDF report  
+✔ Appointment details"""
+
+    elif "doctor" in text:
+        return """We suggest doctors based on your symptoms 👩‍⚕️  
+
+Examples:
+• Fever → General Physician  
+• Skin issues → Dermatologist  
+• Heart problems → Cardiologist  
+
+👉 Enter your symptoms above to get recommendation."""
+
+    elif "emergency" in text:
+        return """🚨 This seems like an emergency  
+
+Please:
+• Visit nearest hospital immediately  
+• Do not delay treatment  
+• Call emergency services if needed  
+
+Your safety is important!"""
+
+    elif "thank" in text:
+        return """You're welcome 😊  
+I'm always here to help you!"""
+
     elif "bye" in text:
-        return "Take care! 👋"
+        return """Take care 👋  
+Stay healthy and safe!"""
+
     else:
-        return "Sorry, I didn't understand."
+        return """I'm not fully sure about that 🤔  
+
+But I can help you with:
+• Symptoms  
+• Doctor suggestions  
+• Appointments  
+
+Try asking something like:  
+"fever", "headache", or "appointment" 😊"""
 
 if st.button("Send"):
     if user_input != "":
