@@ -73,15 +73,15 @@ if response.status_code == 200:
     doctor = data["recommended_doctor"]
 else:
     st.error("API error! Check backend")
-
+try:
+    
             # Generate PDF
-            pdf_file = create_pdf(name, symptoms, doctor, date, time)
+    pdf_file = create_pdf(name, symptoms, doctor, date, time)
 
-            with open(pdf_file, "rb") as f:
-                st.download_button("Download PDF", f, file_name="report.pdf")
-
-        except:
-            st.error("API not running! Start FastAPI first.")
+    with open(pdf_file, "rb") as f:
+        st.download_button("Download PDF", f, file_name="report.pdf")
+except:
+        st.error("API not running! Start FastAPI first")
 
 
 # 🤖 Chatbot Section
